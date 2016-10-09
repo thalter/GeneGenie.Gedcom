@@ -16,10 +16,14 @@
 // </copyright>
 // <author> Copyright (C) 2007 David A Knight david@ritter.demon.co.uk </author>
 // <author> Copyright (C) 2016 Ryan O'Neill r@genegenie.com </author>
+#define XML_NODE_UNDEFINED
 
 namespace GeneGenie.Gedcom.Reports
 {
+
+#if(!XML_NODE_UNDEFINED)
     using System.Xml;
+#endif
 
     /// <summary>
     /// TODO Doc
@@ -33,6 +37,8 @@ namespace GeneGenie.Gedcom.Reports
         public GedcomXMLGenerator()
         {
         }
+
+#if(!XML_NODE_UNDEFINED)
 
         /// <summary>
         /// Generates the XML.
@@ -63,5 +69,7 @@ namespace GeneGenie.Gedcom.Reports
 
             return doc;
         }
+#endif
+
     }
 }
