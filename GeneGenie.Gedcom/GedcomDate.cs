@@ -28,9 +28,8 @@ namespace GeneGenie.Gedcom
     /// <summary>
     /// Defines a date, allowing partial dates, date ranges etc.
     /// </summary>
-    public class GedcomDate : GedcomRecord
+    public class GedcomDate : GedcomRecord, IComparable, IComparable<GedcomDate>, IEquatable<GedcomDate>
     {
-        // TODO: Organize this list of private class members a bit differently once I fully understand the usage of this class
         private GedcomDateType dateType;
         private GedcomDatePeriod datePeriod;
 
@@ -49,7 +48,6 @@ namespace GeneGenie.Gedcom
         /// </summary>
         public GedcomDate()
         {
-            // TODO: Why initialize the two date1/date2 strings but leave everything else?
             date1 = string.Empty;
             date2 = string.Empty;
         }
@@ -138,9 +136,8 @@ namespace GeneGenie.Gedcom
         }
 
         /// <summary>
-        /// Gets or sets
+        /// Gets or sets the date, or the first date in a date range.
         /// </summary>
-        /// TODO: Doc
         public string Date1
         {
             get
@@ -160,18 +157,16 @@ namespace GeneGenie.Gedcom
         }
 
         /// <summary>
-        ///
-        /// Gets </summary>
-        /// TODO: Doc
+        /// Gets the DateTime, or the first DateTime in a date range.
+        /// </summary>
         public DateTime? DateTime1
         {
             get { return dateTime1; }
         }
 
         /// <summary>
-        ///
-        /// Gets or sets </summary>
-        /// TODO: Doc
+        /// Gets or sets the second date in a date range.
+        /// </summary>
         public string Date2
         {
             get
@@ -191,9 +186,8 @@ namespace GeneGenie.Gedcom
         }
 
         /// <summary>
-        /// Gets
+        /// Gets the second DateTime in a date range.
         /// </summary>
-        /// TODO: Doc
         public DateTime? DateTime2
         {
             get { return dateTime2; }
@@ -294,13 +288,12 @@ namespace GeneGenie.Gedcom
         /// <summary>
         /// Compare two dates to see if first is greater than the second.
         /// </summary>
-        /// <param name="firstDateToCompare" >First date to compare.</param>
-        /// <param name="secondDateToCompare">Second date to compare.</param>
+        /// <param name="a">First date to compare.</param>
+        /// <param name="b">Second date to compare.</param>
         /// <returns>bool</returns>
-        public static bool operator <(GedcomDate firstDateToCompare, GedcomDate secondDateToCompare)
+        public static bool operator <(GedcomDate a, GedcomDate b)
         {
-            
-            int ret = CompareByDate(firstDateToCompare, secondDateToCompare);
+            int ret = CompareByDate(a, b);
 
             return ret < 0;
         }
@@ -357,23 +350,39 @@ namespace GeneGenie.Gedcom
         /// <summary>
         /// Compare two GEDCOM format dates.
         /// </summary>
-        /// <param name="firstDateToCompare">First date to compare.</param>
-        /// <param name="secondDateToCompare">Second date to compare.</param>
+        /// <param name="datea">First date to compare.</param>
+        /// <param name="dateb">Second date to compare.</param>
         /// <returns>0 if equal, -1 if datea less than dateb, else 1.</returns>
-        public static int CompareByDate(GedcomDate firstDateToCompare, GedcomDate secondDateToCompare)
+        public static int CompareByDate(GedcomDate datea, GedcomDate dateb)
         {
-            int ret = CompareNullableDateTime(firstDateToCompare.DateTime1, secondDateToCompare.DateTime1);
+            bool anull = Equals(datea, null);
+            bool bnull = Equals(dateb, null);
+
+            if (anull && bnull)
+            {
+                return 0;
+            }
+            else if (anull)
+            {
+                return -1;
+            }
+            else if (bnull)
+            {
+                return 1;
+            }
+
+            int ret = CompareNullableDateTime(datea.DateTime1, dateb.DateTime1);
 
             if (ret == 0)
             {
-                ret = CompareNullableDateTime(firstDateToCompare.DateTime2, secondDateToCompare.DateTime2);
+                ret = CompareNullableDateTime(datea.DateTime2, dateb.DateTime2);
 
                 if (ret == 0)
                 {
-                    ret = string.Compare(firstDateToCompare.Date1, secondDateToCompare.Date1, true);
+                    ret = string.Compare(datea.Date1, dateb.Date1, true);
                     if (ret == 0)
                     {
-                        ret = string.Compare(firstDateToCompare.Date2, secondDateToCompare.Date2, true);
+                        ret = string.Compare(datea.Date2, dateb.Date2, true);
                     }
                 }
             }
@@ -390,7 +399,7 @@ namespace GeneGenie.Gedcom
         /// </returns>
         public override bool IsEquivalentTo(object obj)
         {
-            return CompareByDate(this, obj as GedcomDate) == 0;
+            return CompareTo(obj as GedcomDate) == 0;
         }
 
         /// <summary>
@@ -403,6 +412,36 @@ namespace GeneGenie.Gedcom
         public override bool Equals(object obj)
         {
             return this == (GedcomDate)obj;
+        }
+
+        /// <summary>
+        /// Compares the current and passed-in object to see if they are the same.
+        /// </summary>
+        /// <param name="obj">The object to compare the current instance against.</param>
+        /// <returns>A 32-bit signed integer that indicates whether this instance precedes, follows, or appears in the same position in the sort order as the value parameter.</returns>
+        public int CompareTo(object obj)
+        {
+            return CompareTo(obj as GedcomDate);
+        }
+
+        /// <summary>
+        /// Compares the current and passed-in date to see if they are the same.
+        /// </summary>
+        /// <param name="otherDate">The date to compare the current instance against.</param>
+        /// <returns>A 32-bit signed integer that indicates whether this instance precedes, follows, or appears in the same position in the sort order as the value parameter.</returns>
+        public int CompareTo(GedcomDate otherDate)
+        {
+            return CompareByDate(this, otherDate);
+        }
+
+        /// <summary>
+        /// Compares the current and passed-in date to see if they are the same.
+        /// </summary>
+        /// <param name="otherDate">The date to compare the current instance against.</param>
+        /// <returns>True if they match, False otherwise.</returns>
+        public bool Equals(GedcomDate otherDate)
+        {
+            return this == otherDate;
         }
 
         /// <inheritdoc/>

@@ -143,6 +143,7 @@
     <Compile Include="Date\GedcomDateNullEqualTest.cs" />
     <Compile Include="Date\GedcomDatePeriodTest.cs" />
     <Compile Include="Date\GedcomDateParseTest.cs" />
+    <Compile Include="Address\GedcomAddressComparisonTest.cs" />
     <Compile Include="GedcomDeleteTest.cs" />
     <Compile Include="GedcomIdentTest.cs" />
     <Compile Include="GedcomToDoTests.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="GedcomGraphTest.cs" />
     <Compile Include="Individuals\GedcomFamilyLinkComparisonTest.cs" />
     <Compile Include="Individuals\GedcomIndividualMatchTest.cs" />
+    <Compile Include="GedComComparisonTests.cs" />
     <Compile Include="RecordReaderTests\GedcomRecordCountTest.cs" />
     <Compile Include="GedcomRecordWriterTest.cs" />
     <Compile Include="GedcomXMLGeneratorTest.cs" />
